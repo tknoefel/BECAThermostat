@@ -24,10 +24,10 @@ import socket
 
 
 class BECAThermostat(object):
-    server = "bestbeca.cn"
-    port = 25565
-    BUF_SIZE_DATA = 8
-    BUF_SIZE_OK = 1
+    __server = "bestbeca.cn"
+    __PORT = 25565
+    __BUF_SIZE_DATA = 8
+    __BUF_SIZE_OK = 1
     STATUS_MSG = bytes.fromhex("A001010101010000")
 
     def __init__(self, beca_id):
@@ -42,7 +42,7 @@ class BECAThermostat(object):
         return (self.hexID)
 
     def connect(self):
-        self.sock = socket.create_connection((BECAThermostat.server, BECAThermostat.port))
+        self.sock = socket.create_connection((BECAThermostat.__server, BECAThermostat.__PORT))
         self.sock.sendall(self.hexIDBytes)     # error handling missing
 
     def disconnect(self):
@@ -50,10 +50,10 @@ class BECAThermostat(object):
 
     def status(self):
         self.sock.sendall(BECAThermostat.STATUS_MSG)          # error_handling
-        data = self.sock.recv(BECAThermostat.BUF_SIZE_DATA)   # error_handling
+        data = self.sock.recv(BECAThermostat.__BUF_SIZE_DATA)  # error_handling
         return data
 
-    def calc_checksum(self, data):
+    def __calc_checksum(self, data):
         cs = 0x00
         for i in range(0, len(data)):
             cs += data[i]
@@ -65,6 +65,6 @@ print(k.info())
 k.connect()
 stat = k.status()
 print(stat)
-print(k.calc_checksum(stat[0:-1]))
+print(k.__calc_checksum(stat[0:-1]))
 print(stat[7])
 k.disconnect()
